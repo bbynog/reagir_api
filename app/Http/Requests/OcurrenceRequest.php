@@ -26,6 +26,15 @@ class OcurrenceRequest extends FormRequest
         return [
             'violence_type' => 'required',
             'what_to_do' => 'required',
-        ];             
+        ];
+        
+    }
+
+    public function messages()
+    {
+        return [
+            'required' => 'você precisa obrigatoriamente preencher este campo.',
+            'violence_type.required' => 'preencha com exatidão, pois tipos de violência.' 
+        ];
     }
 }

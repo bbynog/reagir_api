@@ -24,18 +24,8 @@ class OcurrenceController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(OcurrenceRequest $request)
-    {
-        /*dd("dasd");
-        dd($request->all());*/
-        //dd('coming..');
-        //$validated = $request->validated();
-        $type_of_violence = $request->input("type_of_violence");
-        $what_to_do = $request->input("what_to_do");
-        dd($request);
-        
-
-       
-        
+    {        
+        dd($request->all());         
     }
 
     /**
