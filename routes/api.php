@@ -2,7 +2,6 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\OcurrenceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,9 +14,9 @@ use App\Http\Controllers\OcurrenceController;
 |
 */
 
-/*Route::middleware('auth:api')->get('/user', function (Request $request) {
+Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
-});*/
+});
 
-//Route::post('ocurrences', 'OcurrenceController@store');
-Route::resource('ocurrences', OcurrenceController::class);
+Route::get('ocurrences', 'Api\OcurrenceController@index');
+Route::post('ocurrences', 'Api\OcurrenceController@store');

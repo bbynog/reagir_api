@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\OcurrenceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,4 +13,6 @@ use App\Http\Controllers\OcurrenceController;
 |
 */
 
-//Route::resource('ocurrences', OcurrenceController::class);
+Route::get('/', function () {
+    return view('welcome');
+});
