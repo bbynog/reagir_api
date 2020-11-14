@@ -30,11 +30,24 @@ class OcurrenceService
         return $ocurrence;
     }
 
-    public function delete(array $data, $id)
+    public function delete($id)
     {
         $ocurrence = $this->ocurrence->find($id);
-        $ocurrence->delete();
+        $deleted = $ocurrence->delete();
 
-        return $ocurrence['deleted_at'];
+        return $deleted;
     }
+
+    public function list()
+    {        
+        return $this->ocurrence::all();
+    }
+
+    public function show($id)
+    {
+        $ocurrence = $this->ocurrence->find($id);
+        return $ocurrence;
+    }
+    
+
 }

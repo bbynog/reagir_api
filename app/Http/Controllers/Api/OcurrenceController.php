@@ -18,8 +18,9 @@ class OcurrenceController extends Controller
     }
 
     public function index()
-    {
-        return "nois";
+    {        
+        $list = $this->service->list();
+        return response($list, 200);
     }
 
     public function store(Request $request)
@@ -38,9 +39,15 @@ class OcurrenceController extends Controller
 
     public function delete(Request $request, $id)
     {
-        $ocurrence = $this->service->delete($request->all(), $id);
+        $ocurrence = $this->service->delete($id);
 
-        return response('Deletado', 200);
+        return response($ocurrence, 200);
+    }
+
+    public function show($id)
+    {
+        $show = $this->service->show($id);
+        return response($show, 200);
     }
     
 }
