@@ -23,8 +23,24 @@ class OcurrenceController extends Controller
     }
 
     public function store(Request $request)
-    {       
+    {          
         $ocurrence = $this->service->save($request->all());
+        
+        return response($ocurrence, 200);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $ocurrence = $this->service->update($request->all(), $id);
+
+        return response($ocurrence, 200);
+    }
+
+    public function delete(Request $request, $id)
+    {
+        $ocurrence = $this->service->delete($request->all(), $id);
+
+        return response('Deletado', 200);
     }
     
 }

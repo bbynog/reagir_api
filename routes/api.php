@@ -20,3 +20,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::get('ocurrences', 'Api\OcurrenceController@index');
 Route::post('ocurrences', 'Api\OcurrenceController@store');
+Route::put('ocurrences/{id}', 'Api\OcurrenceController@update');
+Route::patch('ocurrences/{id}/delete', 'Api\OcurrenceController@delete');
