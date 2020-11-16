@@ -11,6 +11,7 @@ class Ocurrence extends Model
     
 
     protected $fillable = [
+      'user_id',
       'violence_type',
       'what_to_do'
     ];
@@ -20,6 +21,11 @@ class Ocurrence extends Model
       'updated_at',
       'deleted_at',
     ];
+
+    public function user()
+    {
+      return $this->belongsTo(User::class);
+    }
 
 
 }

@@ -15,6 +15,7 @@ class CreateOcurrencesTable extends Migration
     {
         Schema::create('ocurrences', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained();
             $table->longText('violence_type');
             $table->longText('what_to_do');
             $table->timestamps();
