@@ -25,3 +25,4 @@ Route::delete('ocurrences/{id}', 'Api\OcurrenceController@delete');
 Route::get('ocurrences/{id}', 'Api\OcurrenceController@show');
 
 Route::post('register', 'Api\AuthController@register');
+Route::post('login', 'Api\AuthController@login');
