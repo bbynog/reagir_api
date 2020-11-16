@@ -20,6 +20,7 @@ class OcurrenceController extends Controller
     public function index()
     {        
         $list = $this->service->list();
+        
         return response($list, 200);
     }
 
@@ -47,6 +48,7 @@ class OcurrenceController extends Controller
     public function show($id)
     {
         $show = $this->service->show($id);
+
         return response($show, 200);
     }
     

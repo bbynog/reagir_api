@@ -40,13 +40,12 @@ class OcurrenceService
 
     public function list()
     {        
-        return $this->ocurrence::all();
+        return $this->ocurrence->all();
     }
 
     public function show($id)
-    {
-        $ocurrence = $this->ocurrence->find($id);
-        return $ocurrence;
+    {        
+        return $this->ocurrence->find($id);
     }
     
 
