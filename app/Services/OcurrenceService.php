@@ -17,6 +17,7 @@ class OcurrenceService
     {        
         $this->ocurrence->violence_type = $data['violence_type'];
         $this->ocurrence->what_to_do = $data['what_to_do'];
+        $this->ocurrence->user_id = $data['user_id'];
         $this->ocurrence->save();
         
         return $this->ocurrence;
