@@ -16,10 +16,19 @@ class OcurrenceTypeService
     public function save(array $data)
     {        
         $this->ocurrence_type->name = $data['name'];
-        $this->ocurrence_type->status = $data['status'];               
-        $this->ocurrence_type->save();
-        
-        return $this->ocurrence_type;
+        switch (strtolower($data['status'])) {
+            case 'leve':                 
+            case 'média':
+            case 'media':                         
+            case 'pesada':
+                $this->ocurrence_type->status = $data['status']; 
+                $this->ocurrence_type->save();
+
+                return $this->ocurrence_type;
+                break;
+            default:
+                return response("Tipo inexistente", 400);
+        }                    
     }
 
     public function update(array $data, $id)
@@ -51,9 +60,19 @@ class OcurrenceTypeService
     public function status(array $data, $id)
     {             
         $ocurrence_type = $this->ocurrence_type->find($id);
-        $ocurrence_type->status = $data['status'];
+        switch (strtolower($data['status'])) {
+            case 'leve':                 
+            case 'média':
+            case 'media':                         
+            case 'pesada':
+                $ocurrence_type->status = $data['status']; 
+                $ocurrence_type->save();
 
-        return $ocurrence_type;
+                return $ocurrence_type;
+                break;
+            default:
+                return response("Tipo inexistente", 400);
+        }
     }
     
 
