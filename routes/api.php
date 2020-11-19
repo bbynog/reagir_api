@@ -20,11 +20,13 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::put('ocurrences/{id}', 'Api\OcurrenceController@update');
     Route::delete('ocurrences/{id}', 'Api\OcurrenceController@delete');
     Route::get('ocurrences/{id}', 'Api\OcurrenceController@show');
-});    
+});
 
 Route::post('register', 'Api\AuthController@register');
 Route::post('login', 'Api\AuthController@login')->name('login');
 
+
+#TODO: Não seria interessante proteger nossos cruds para que apenas usuários permitidos(logados) possam utiliza-los?
 Route::get('ocurrence_types', 'Api\OcurrenceTypeController@index');
 Route::post('ocurrence_types', 'Api\OcurrenceTypeController@store');
 Route::put('ocurrence_types/{id}', 'Api\OcurrenceTypeController@update');
