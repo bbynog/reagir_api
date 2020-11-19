@@ -34,9 +34,18 @@ class OcurrenceTypeService
     public function update(array $data, $id)
     {
         $ocurrence_type = $this->ocurrence_type->find($id);
-        $ocurrence_type->update($data);
+        switch (strtolower($data['status'])) {
+            case 'leve':                 
+            case 'média':
+            case 'media':                         
+            case 'pesada':                
+                $ocurrence_type->update($data);
 
-        return $ocurrence_type;
+                return $ocurrence_type;
+                break;
+            default:
+                return response("Tipo inexistente", 400);
+        }
     }
 
     public function delete($id)
