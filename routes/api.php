@@ -30,3 +30,4 @@ Route::post('ocurrence_types', 'Api\OcurrenceTypeController@store');
 Route::put('ocurrence_types/{id}', 'Api\OcurrenceTypeController@update');
 Route::delete('ocurrence_types/{id}', 'Api\OcurrenceTypeController@delete');
 Route::get('ocurrence_types/{id}', 'Api\OcurrenceTypeController@show');
+Route::put('ocurrence_types/status/{id}', 'Api\OcurrenceTypeController@status');

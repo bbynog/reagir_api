@@ -47,6 +47,14 @@ class OcurrenceTypeService
     {        
         return $this->ocurrence_type->find($id);
     }
+
+    public function status(array $data, $id)
+    {             
+        $ocurrence_type = $this->ocurrence_type->find($id);
+        $ocurrence_type->status = $data['status'];
+
+        return $ocurrence_type;
+    }
     
 
 }
