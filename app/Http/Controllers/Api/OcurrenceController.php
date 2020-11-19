@@ -7,6 +7,9 @@ use App\Http\Requests\OcurrenceRequest;
 use Illuminate\Http\Request;
 use App\Services\OcurrenceService;
 use App\Models\Ocurrence;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\OcurrenceResource;
+
 
 class OcurrenceController extends Controller
 {
@@ -25,8 +28,10 @@ class OcurrenceController extends Controller
     }
 
     public function store(Request $request)
-    {          
-        $ocurrence = $this->service->save($request->all());
+    {      
+        $parameters = $request->all();
+        $parameters['user_id'] = Auth::user()->id;
+        $ocurrence = $this->service->save($parameters);
         
         return response($ocurrence, 200);
     }
@@ -49,7 +54,7 @@ class OcurrenceController extends Controller
     {
         $show = $this->service->show($id);
 
-        return response($show, 200);
+        return response(new OcurrenceResource($show), 200);
     }
     
 }

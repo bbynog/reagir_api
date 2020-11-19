@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Ocurrence extends Model
 {
-    use SoftDeletes;
-    
+    use SoftDeletes;    
 
     protected $fillable = [
       'user_id',
+      'ocurrence_type_id',
       'violence_type',
       'what_to_do'
     ];
@@ -26,6 +26,11 @@ class Ocurrence extends Model
     public function user()
     {
       return $this->belongsTo(User::class);
+    }
+
+    public function ocurrenceType()
+    {
+      return $this->belongsTo(OcurrenceType::class);
     }
 
 

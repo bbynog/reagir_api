@@ -14,15 +14,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
-Route::get('ocurrences', 'Api\OcurrenceController@index');
-Route::post('ocurrences', 'Api\OcurrenceController@store');
-Route::put('ocurrences/{id}', 'Api\OcurrenceController@update');
-Route::delete('ocurrences/{id}', 'Api\OcurrenceController@delete');
-Route::get('ocurrences/{id}', 'Api\OcurrenceController@show');
+Route::group(['middleware' => 'auth:api'], function() {
+    Route::get('ocurrences', 'Api\OcurrenceController@index');
+    Route::post('ocurrences', 'Api\OcurrenceController@store');
+    Route::put('ocurrences/{id}', 'Api\OcurrenceController@update');
+    Route::delete('ocurrences/{id}', 'Api\OcurrenceController@delete');
+    Route::get('ocurrences/{id}', 'Api\OcurrenceController@show');
+});    
 
 Route::post('register', 'Api\AuthController@register');
-Route::post('login', 'Api\AuthController@login');
+Route::post('login', 'Api\AuthController@login')->name('login');
+
+Route::get('ocurrence_types', 'Api\OcurrenceTypeController@index');
+Route::post('ocurrence_types', 'Api\OcurrenceTypeController@store');
+Route::put('ocurrence_types/{id}', 'Api\OcurrenceTypeController@update');
+Route::delete('ocurrence_types/{id}', 'Api\OcurrenceTypeController@delete');
+Route::get('ocurrence_types/{id}', 'Api\OcurrenceTypeController@show');

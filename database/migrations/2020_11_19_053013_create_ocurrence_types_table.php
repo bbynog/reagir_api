@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateOcurrencesTable extends Migration
+class CreateOcurrenceTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,10 @@ class CreateOcurrencesTable extends Migration
      */
     public function up()
     {
-        Schema::create('ocurrences', function (Blueprint $table) {
+        Schema::create('ocurrence_types', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users');
-            #$table->foreignId('ocurrence_type_id')->constrained('ocurrence_types');
-            $table->longText('violence_type');
-            $table->longText('what_to_do');
+            $table->longText('name');            
+            $table->longText('status');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -31,6 +29,6 @@ class CreateOcurrencesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ocurrences');
+        Schema::dropIfExists('ocurrence_types');
     }
 }

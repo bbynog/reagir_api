@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class OcurrenceResource extends JsonResource
+class OcurrenceTypeResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,14 +16,10 @@ class OcurrenceResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'user' => [
-                'name' => $this->user->name,
-                'email' => $this->user->email
-            ],
-            'violence_type' => $this->violence_type,
-            'what_to_do' => $this->what_to_do,
+            'name' => $this->name,
+            'status' => $this->status,
             'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at            
+            'updated_at' =>$this->updated_at
         ];
     }
 }
