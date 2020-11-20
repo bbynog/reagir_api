@@ -52,9 +52,9 @@ class OcurrenceTypeController extends Controller
         return response(new OcurrenceTypeResource($show), 200);
     }
 
-    public function status(Request $request, $id)
+    public function changeStatus(Request $request, $id)
     {
-        $ocurrence_type = $this->service->status($request->all(), $id);
+        $ocurrence_type = $this->service->changeStatus($request->get('status'), $id);
 
         return response($ocurrence_type, 200);
     }

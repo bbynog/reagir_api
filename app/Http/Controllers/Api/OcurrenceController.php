@@ -30,7 +30,7 @@ class OcurrenceController extends Controller
     public function store(Request $request)
     {      
         $parameters = $request->all();
-        $parameters['user_id'] = Auth::user()->id;
+        $parameters['user_id'] = Auth::user()->id;             
         $ocurrence = $this->service->save($parameters);
         
         return response($ocurrence, 200);
@@ -55,6 +55,5 @@ class OcurrenceController extends Controller
         $show = $this->service->show($id);
 
         return response(new OcurrenceResource($show), 200);
-    }
-    
+    }    
 }

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\OcurrenceType;
+use Illuminate\Database\Eloquent\Collection;
 
 class OcurrenceTypeService
 {
@@ -13,102 +14,92 @@ class OcurrenceTypeService
         $this->ocurrence_type = $ocurrence_type;
     }
 
-    public function save(array $data)
-    {
+    public function save(array $data): array
+    {           
+        if (!$this->validateStatus($data['status'])) {
+            return [
+                "data" => "Invalid Status Type. Accept only ['leve', 'media', 'pesada'].",
+                "success" => false 
+            ];
+        }
+        
         $this->ocurrence_type->name = $data['name'];
-        # Gostei da maneira que você utilizou esse strotolower para unificar/padronizar o formato do valor dentro do banco, tá de parabas! <3
-        # Não compreendi a lógica de você utilizar essa estrutura do switch.
-        # acredito que apenas um $this->ocurrency_type->status = strtolower($data['status']); resolveria seu problema aqui.
+        $this->ocurrence_type->status = $data['status'];
+        $this->ocurrence_type->save();
 
-
-        # O Switch funciona como um grande IF, aonde o valor '$variavel' dentro do switch($variavel) vai ser condicionado a cada case.
-        # os 'case' que vc escreve ditam o conjunto de regras que você vai condicionar se o valor for o que está ali no case, por exemplo 'leve' ou 'média', etc.
-
-
-        # PS: Esses comentários acima servem pra o update também.
-        switch (strtolower($data['status'])) {
-            case 'leve':
-            case 'média':
-            case 'media':
-            case 'pesada':
-                # Nesse contexto que você escreveu, você só está salvando/criando um ocurrence_type se o status for igual a 'pesada'.
-                $this->ocurrence_type->status = $data['status'];
-                $this->ocurrence_type->save();
-                # Perceba que essas 2 linhas de código acima são o que você precisa pra salvar
-                # o seu objeto ocurrency_type e você tá condicionando seu save inteiro a se o status for 'pesada'
-
-                return $this->ocurrence_type;
-                break;
-            default:
-                # Os retornos do tipo 'response' são feitos apenas no controlador,
-                # que é quem envia uma resposta a sua requisição contendo um valor e um status code.
-                # Nesse caso aqui seria interessante que você apenas retornasse o objeto que foi salvo para que seu controlador informe
-                # o que foi salvo no banco (o que foi salvo no banco fica guardado dentro de $this->ocurrency_type
-                # logo após você ter usado o o método ->save().
-                return response("Tipo inexistente", 400);
-        }
+        return [
+            "data" => $this->ocurrence_type,
+            "success" => true
+        ];               
     }
 
-    public function update(array $data, $id)
+    public function update(array $data, int $id): array
     {
         $ocurrence_type = $this->ocurrence_type->find($id);
-        switch (strtolower($data['status'])) {
-            case 'leve':
-            case 'média':
-            case 'media':
-            case 'pesada':
-                $ocurrence_type->update($data);
-
-
-                return $ocurrence_type;
-                break;
-            default:
-                # Os retornos do tipo 'response' são feitos apenas no controlador,
-                # que é quem envia uma resposta a sua requisição contendo um valor e um status code.
-                # Nesse caso aqui seria interessante que você apenas retornasse o objeto que foi salvo para que seu controlador informe
-                # o que foi salvo no banco (o que foi salvo no banco fica guardado dentro de $ocurrence_type
-                # logo após você ter usado o o método ->update().
-                return response("Tipo inexistente", 400);
+        
+        if (!$this->validateStatus($data['status'])) {
+            return [
+                "data" => "Invalid Status Type. Accept only ['leve', 'media', 'pesada'].",
+                "success" => false 
+            ];
         }
+
+        $ocurrence_type->update($data);
+
+        return [
+            "data" => $ocurrence_type,
+            "success" => true
+        ]; 
     }
 
-    public function delete($id)
+    public function delete(int $id): bool
     {
         $ocurrence_type = $this->ocurrence_type->find($id);
-        $deleted = $ocurrence_type->delete();
-
-        #Dica: Você poderia retornar aqui o $ocurrency_type->delete() diretamente sem precisar criar a variável '$deleted',
-        # pois esse método delete() retorna true (se deletou) ou false (se não deletou) e é o que basicamente vc mostra na resposta na sua action do controlador.
-        return $deleted;
+        return $ocurrence_type->delete();
     }
 
-    public function list()
-    {
+    public function list(): Collection
+    {        
         return $this->ocurrence_type->all();
     }
 
-    public function show($id)
+    public function show(int $id): OcurrenceType
     {
         return $this->ocurrence_type->find($id);
     }
 
-    public function status(array $data, $id)
+    public function changeStatus(string $status, int $id): array
     {
         $ocurrence_type = $this->ocurrence_type->find($id);
-        switch (strtolower($data['status'])) {
-            case 'leve':
-            case 'média':
-            case 'media':
-            case 'pesada':
-                $ocurrence_type->status = $data['status'];
-                $ocurrence_type->save();
-
-                return $ocurrence_type;
-                break;
-            default:
-                return response("Tipo inexistente", 400);
+        if (!$this->validateStatus($status)) {
+            return [
+                "data" => "Invalid Status Type. Accept only ['leve', 'media', 'pesada'].",
+                "success" => false 
+            ];
         }
+
+        $ocurrence_type->status = $status;
+        $ocurrence_type->save();
+
+        return [
+            "data" => $ocurrence_type,
+            "success" => true
+        ]; 
     }
 
+    public function validateStatus(string $status): bool
+    {        
+        $allowedTypes = ["leve", "media", "pesada"];
+        if (!in_array($status, $allowedTypes)) {
+            return false;
+        }
 
+        return true;
+    }
+
+    public function getType(string $name)
+    {              
+        $type = $this->ocurrence_type->where('name', $name)->first();   
+        return $type; 
+    }
 }

@@ -11,7 +11,7 @@ class Ocurrence extends Model
 
     protected $fillable = [
       'user_id',
-      'ocurrence_type_id',
+      'type_id',
       'violence_type',
       'what_to_do'
     ];
@@ -28,7 +28,7 @@ class Ocurrence extends Model
       return $this->belongsTo(User::class);
     }
 
-    public function ocurrenceType()
+    public function type()
     {
       return $this->belongsTo(OcurrenceType::class);
     }
