@@ -55,5 +55,6 @@ class OcurrenceController extends Controller
         $show = $this->service->show($id);
 
         return response(new OcurrenceResource($show), 200);
+        
     }    
 }

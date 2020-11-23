@@ -19,8 +19,14 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
+        $this->validate($request, [
+            'name' => ['required'],
+            'email' => ['required', 'email'],
+            'password' => ['required']
+        ]);
+        
         $user = $this->userService->save($request->all());  
-        $token = $user->createToken('Laravel Password Grant Client')->accessToken;
+        $token = $user->createToken('Laravel Password Grant Client')->accessToken;        
         
         return response()->json([
             'token' => $token,
@@ -30,6 +36,10 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
+        $this->validate($request, [
+            'email' => ['required', 'email'],
+            'password' => ['required']
+        ]);
 
         if(!Auth::attempt($request->all())) {
             return response()->json([

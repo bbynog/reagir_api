@@ -47,7 +47,7 @@ class OcurrenceService
             if (is_null($type)) {                
                 return [
                     "data" => "Type doesn't exist.",
-                    "success" => false 
+                    "success" => false
                 ];
             }  
             $data['type_id'] = $type->id;
@@ -79,5 +79,6 @@ class OcurrenceService
     public function show($id)
     {        
         return new OcurrenceResource($this->ocurrence->find($id));
+        
     }   
 }

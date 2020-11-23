@@ -36,12 +36,13 @@ class OcurrenceTypeService
     public function update(array $data, int $id): array
     {
         $ocurrence_type = $this->ocurrence_type->find($id);
-        
-        if (!$this->validateStatus($data['status'])) {
-            return [
-                "data" => "Invalid Status Type. Accept only ['leve', 'media', 'pesada'].",
-                "success" => false 
-            ];
+        if ($data['status'] !== NULL) {
+            if (!$this->validateStatus($data['status'])) {
+                return [
+                    "data" => "Invalid Status Type. Accept only ['leve', 'media', 'pesada'].",
+                    "success" => false 
+                ];
+            }
         }
 
         $ocurrence_type->update($data);
