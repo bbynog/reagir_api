@@ -15,7 +15,7 @@ class OcurrenceTypeService
     }
 
     public function save(array $data): array
-    {           
+    {        
         if (!$this->validateStatus($data['status'])) {
             return [
                 "data" => "Invalid Status Type. Accept only ['leve', 'media', 'pesada'].",
@@ -35,8 +35,7 @@ class OcurrenceTypeService
 
     public function update(array $data, int $id): array
     {
-        $ocurrence_type = $this->ocurrence_type->find($id);
-        if ($data['status'] !== NULL) {
+        if (array_key_exists('status', $data)) {
             if (!$this->validateStatus($data['status'])) {
                 return [
                     "data" => "Invalid Status Type. Accept only ['leve', 'media', 'pesada'].",
@@ -45,6 +44,7 @@ class OcurrenceTypeService
             }
         }
 
+        $ocurrence_type = $this->ocurrence_type->find($id);
         $ocurrence_type->update($data);
 
         return [

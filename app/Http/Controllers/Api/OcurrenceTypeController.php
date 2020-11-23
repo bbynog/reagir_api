@@ -24,7 +24,12 @@ class OcurrenceTypeController extends Controller
     }
 
     public function store(Request $request)
-    {      
+    {    
+        $this->validate($request, [
+            'name' => ['required'],
+            'status' => ['required'],
+        ]);
+            
         $parameters = $request->all();        
         $ocurrence_type = $this->service->save($parameters);
         

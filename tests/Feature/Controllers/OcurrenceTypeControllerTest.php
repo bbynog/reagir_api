@@ -46,7 +46,7 @@ class OcurrenceTypeControllerTest extends TestCase
     }
 
     /** @test */
-    public function check_if_storing_is_unsuccessful()
+    public function check_if_storing_validation_is_unsuccessful()
     {
         #Creating and acting as User
         $user = factory('App\Models\User')->create();
@@ -58,10 +58,9 @@ class OcurrenceTypeControllerTest extends TestCase
                 'leve', 'media', 'pesada'
             ])),
         ]);
-        
         #Assertions
-        $response->assertJson(['message' => 'Undefined index: name']);
-        $response->assertStatus(500);        
+        $response->assertJsonFragment(['The name field is required.']);
+        $response->assertStatus(422);        
     }
 
     /** @test */
@@ -100,9 +99,9 @@ class OcurrenceTypeControllerTest extends TestCase
         #Putting data as method DOESN'T request (passing missmatched keys)
         $response = $this->putJson('api/ocurrence_types/' . $type->id, [
             'last_name' => $this->faker->name,
-            'status' => implode($this->faker->randomElements([
-                'leve', 'media', 'pesada'
-            ]))            
+            #'status' => implode($this->faker->randomElements([
+            #    'leve', 'media', 'pesada'
+            #]))            
         ]);
         dd($response);
 
