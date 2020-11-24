@@ -78,7 +78,6 @@ class OcurrenceService
 
     public function show($id)
     {        
-        return new OcurrenceResource($this->ocurrence->find($id));
-        
+        return new OcurrenceResource($this->ocurrence->find($id));   
     }   
 }

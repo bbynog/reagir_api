@@ -83,7 +83,7 @@ class OcurrenceControllerTest extends TestCase
         #Creating Ocurrence Type to pass type_name
         $type = factory('App\Models\OcurrenceType')->create();
 
-        #Calling postJson with MISSMATCHED data and storing into variable
+        #Calling postJson with missing data(what_to_do) and storing into variable
         $response = $this->postJson('api/ocurrences', [
             'violence_type' => $this->faker->name,
             'type_name' => $type->name
