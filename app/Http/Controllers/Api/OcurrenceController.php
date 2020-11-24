@@ -29,6 +29,12 @@ class OcurrenceController extends Controller
 
     public function store(Request $request)
     {      
+        $this->validate($request, [
+            'violence_type' => ['required'],
+            'what_to_do' => ['required'],
+            'type_name' => ['required']
+        ]);
+
         $parameters = $request->all();
         $parameters['user_id'] = Auth::user()->id;             
         $ocurrence = $this->service->save($parameters);
