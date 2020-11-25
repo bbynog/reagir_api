@@ -60,7 +60,7 @@ class OcurrenceController extends Controller
     {
         $show = $this->service->show($id);
 
-        return response(new OcurrenceResource($show), 200);
+        return [new OcurrenceResource($show['response']['data']), $show['status_code']];
         
     }    
 }

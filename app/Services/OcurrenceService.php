@@ -6,6 +6,7 @@ use App\Models\Ocurrence;
 use App\Models\OcurrenceType;
 use App\Services\OcurrenceTypeService;
 use App\Http\Resources\OcurrenceResource;
+use Error;
 
 class OcurrenceService
 {
@@ -84,7 +85,7 @@ class OcurrenceService
         if ($ocurrence === null) {
             return [
                 "response" => [
-                    "data" => "Inexistent Type ID. Please enter a valid one.",
+                    "data" => "Inexistent Ocurrence ID. Please enter a valid one.",
                     "success" => false,
                 ],
                 "status_code" => 422
@@ -108,9 +109,26 @@ class OcurrenceService
     }
 
     public function show($id)
-    {        
-        return new OcurrenceResource($this->ocurrence->find($id));   
-    }   
+    {       
+        $ocurrence = $this->ocurrence->find($id);
+        if ($ocurrence === null ) {
+            return [
+                "response" => [
+                    "data" => "Inexistent Ocurrence ID. Please enter a valid one.",
+                    "success" => false,
+                ],
+                "status_code" => 422
+            ];
+        } 
+
+        return [
+            "response" => [
+                "data" => new OcurrenceResource($ocurrence),
+                "success" => true,
+            ],
+            "status_code" => 200
+        ];   
+    }
 
     private function validateFields(array $data): bool
     {

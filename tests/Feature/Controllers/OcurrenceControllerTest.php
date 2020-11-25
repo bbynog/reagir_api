@@ -44,6 +44,26 @@ class OcurrenceControllerTest extends TestCase
     }
 
     /** @test */
+    /*public function check_if_show_method_is_throwing_error_wrong_id()
+    {       
+        #Creating and acting as User
+        $user = factory('App\Models\User')->create();
+        Passport::actingAs($user);
+
+        #Creating Ocurrence Type
+        factory('App\Models\OcurrenceType')->create();
+          
+        #Creating Ocurrence and storing into variable
+        factory('App\Models\Ocurrence')->create();
+
+        #Calling getJson and storing response into variable
+        $response = $this->getJson('/api/ocurrences/' . 999);
+        dd($response);
+        #Assertions
+                                
+    }*/
+
+    /** @test */
     public function check_if_index_is_showing_all_ocurrences()
     {
         #Creating and acting as User
@@ -197,12 +217,12 @@ class OcurrenceControllerTest extends TestCase
         $user = factory('App\Models\User')->create();
         Passport::actingAs($user); 
 
-        #Soft Deleting data
+        #Soft Deleting data passing wrong ID
         $response = $this->deleteJson('api/ocurrences/999');
         
         #Assertion
         $response->assertStatus(422);
         $response->assertJsonFragment(['success' => false]);
-        $response->assertJsonFragment(['data' => 'Inexistent Type ID. Please enter a valid one.']);
+        $response->assertJsonFragment(['data' => 'Inexistent Ocurrence ID. Please enter a valid one.']);
     }
 }

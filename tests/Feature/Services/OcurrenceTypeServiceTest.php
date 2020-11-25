@@ -40,6 +40,7 @@ class OcurrenceTypeServiceTest extends TestCase
         #Assertions
         $this->assertContains($data, $save_response); 
         $this->assertEquals(true, $save_response['success']);
+        $this->assertInstanceOf(OcurrenceType::class, $save_response['data']);
     }
 
     /** @test */
@@ -69,12 +70,16 @@ class OcurrenceTypeServiceTest extends TestCase
         #Creating Ocurrence Type to check update()
         $type = factory('App\Models\OcurrenceType')->create();
 
+        #Creating variables
+        $name = $this->faker->name;
+        $status = $this->faker->randomElement([
+            'leve', 'media', 'pesada'
+        ]);
+
         #Creating Data as required to check update()
         $data = [
-            'name' => $this->faker->name,
-            'status' => implode($this->faker->randomElements([
-                'leve', 'media', 'pesada'
-            ]))
+            'name' => $name,
+            'status' => $status
         ];
 
         #Calling update() and storing in a variable
@@ -82,6 +87,9 @@ class OcurrenceTypeServiceTest extends TestCase
 
         #Assertion
         $this->assertEquals(true, $update_response['response']['success']);
+        $this->assertContains($name, $update_response['response']);
+        $this->assertContains($status, $update_response['response']);
+        $this->assertInstanceOf(OcurrenceType::class, $update_response['response']['data']);
     }
 
     /** @test */
@@ -93,9 +101,9 @@ class OcurrenceTypeServiceTest extends TestCase
         #Creating Data with [status] field invalid to check update() validation
         $data = [
             'name' => $this->faker->name,
-            'status' => implode($this->faker->randomElements([
+            'status' => $this->faker->randomElement([
                 'light', 'medium', 'heavy'
-            ]))
+            ])
         ];
 
         #Calling update() and storing in a variable
@@ -110,7 +118,7 @@ class OcurrenceTypeServiceTest extends TestCase
     }
 
     /** @test */
-    public function check_if_delete_is_softdeleting()
+    public function check_if_delete_type_is_softdeleting()
     {
         #Creating Ocurrence Type to check delete()
         $type = factory('App\Models\OcurrenceType')->create();
@@ -119,36 +127,36 @@ class OcurrenceTypeServiceTest extends TestCase
         $delete_response = $this->service->delete($type->id);
 
         #Assertion
-        $this->assertEquals(true, $delete_response['response']['success']);        
+        $this->assertEquals(true, $delete_response['response']['success']);
+        $this->assertInstanceOf(OcurrenceType::class, $delete_response['response']['data']);   
+        $this->assertEquals(200, $delete_response['status_code']);     
     }
 
     /** @test */
     public function check_if_list_is_showing_all_ocurrence_types()
     {
-        #Calling all Ocurrence Types into a variable
-        $all_types = $this->ocurrenceType->all();
-
-        #Calling method list() that gives all Ocurrence Types
+        #Creating Types
+        factory('App\Models\OcurrenceType', 5)->create();
+        
+         #Calling method list() that gives all Ocurrence Types
         $list_response = $this->service->list();
 
         #Assertion
-        $this->assertEquals($all_types, $list_response);
+        $this->assertCount(5, $list_response);
     }
 
     /** @test */
     public function check_if_show_is_showing_by_id()
     {
         #Creating Ocurrence Type to check show()
-        $type = factory('App\Models\OcurrenceType')->create();
-
-        #Searching in database to compare in assertion
-        $find_to_compare = $this->ocurrenceType->find($type->id);
+        $type = factory('App\Models\OcurrenceType')->create(['name' => 'teste']);
 
         #Calling method show() and saving into variable
         $show_response = $this->service->show($type->id);
 
         #Assertion
-        $this->assertEquals($find_to_compare, $show_response);
+        $this->assertInstanceOf(OcurrenceType::class, $show_response);
+        $this->assertEquals('teste', $show_response->name);
     }
 
     /** @test */
@@ -157,11 +165,14 @@ class OcurrenceTypeServiceTest extends TestCase
         #Creating Ocurrence Type to check changeStatus()
         $type = factory('App\Models\OcurrenceType')->create();
 
+        #Creating variables to compare
+        $status = $this->faker->randomElement([
+            'leve', 'media', 'pesada'
+        ]);
+
         #Creating data as required to change status
         $data = [
-            'status' => implode($this->faker->randomElements([
-                'leve', 'media', 'pesada'
-            ]))
+            'status' => $status            
         ];
 
         #Calling method changeStatus() and storing into variable
@@ -169,6 +180,8 @@ class OcurrenceTypeServiceTest extends TestCase
 
         #Assertion
         $this->assertEquals(true, $response['success']);
+        $this->assertInstanceOf(OcurrenceType::class, $response['data']);
+        $this->assertEquals($status, $response['data']->status);
     }
 
     /** @test */
@@ -200,9 +213,9 @@ class OcurrenceTypeServiceTest extends TestCase
     {
         #Creating data as required to check validadeStatus()
         $data = [
-            'status' => implode($this->faker->randomElements([
+            'status' => $this->faker->randomElement([
                 'leve', 'media', 'pesada'
-            ]))
+            ])
         ];
 
         #Calling validadeStatus() and storing response into variable
@@ -217,9 +230,9 @@ class OcurrenceTypeServiceTest extends TestCase
     {
         #Creating data as NOT required to check validadeStatus()
         $data = [
-            'status' => implode($this->faker->randomElements([
+            'status' => $this->faker->randomElement([
                 'light', 'medium', 'heavy'
-            ]))
+            ])
         ];
 
         #Calling validadeStatus() and storing response into variable
@@ -240,5 +253,6 @@ class OcurrenceTypeServiceTest extends TestCase
 
         #Assertion
         $this->assertEquals($response->id, $type->id);
+        $this->assertInstanceOf(OcurrenceType::class, $response);
     }
 }

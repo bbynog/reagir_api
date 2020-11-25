@@ -34,10 +34,13 @@ class OcurrenceServiceTest extends TestCase
         #Creating a User to pass ID into save()
         $user = factory('App\Models\User')->create();
 
+        #Creating variables
+        $violence_type = $this->faker->name;
+        $what_to_do = $this->faker->paragraph;
         #Storing data as required on method save() from service       
         $data = [
-            'violence_type' => $this->faker->name,
-            'what_to_do' => $this->faker->paragraph,
+            'violence_type' => $violence_type,
+            'what_to_do' => $what_to_do,
             'type_name' => $type->name,
             'user_id' => $user->id
         ];
@@ -45,9 +48,11 @@ class OcurrenceServiceTest extends TestCase
         #Calling method save() and storing response into a variable
         $response = $this->service->save($data);
         
-        #testar instanceof, valores
         #Assertion
         $this->assertEquals($response['success'], true);
+        $this->assertContains($violence_type, $response); 
+        $this->assertContains($what_to_do, $response);    
+        $this->assertInstanceOf(OcurrenceResource::class, $response['data']);   
     }
 
     /** @test */
@@ -66,7 +71,7 @@ class OcurrenceServiceTest extends TestCase
 
         #Calling method save() and storing response into a variable
         $response = $this->service->save($data);
-
+    
         #Creating Invalid Type message variable
         $message = "Type doesn't exist.";
 
@@ -85,19 +90,23 @@ class OcurrenceServiceTest extends TestCase
         factory('App\Models\OcurrenceType')->create();
 
         #Creating an Ocurrence to pass ID into update()
-        $ocurrence = factory('App\Models\Ocurrence')->create();        
+        $ocurrence = factory('App\Models\Ocurrence')->create();   
+        
+        #Creating Variables
+        $what_to_do = $this->faker->paragraph;
 
         #Creating Data to pass into update()
         $data = [
-            'what_to_do' => $this->faker->paragraph
+            'what_to_do' => $what_to_do
         ];
 
         #Calling update() and storing response into variable
         $response = $this->service->update($data, $ocurrence->id);
 
-        #instanceof, variavel/faker
         #Assertion
         $this->assertEquals($response['response']['success'], true);
+        $this->assertInstanceOf(OcurrenceResource::class, $response['response']['data']);
+        $this->assertContains($what_to_do, $response['response']);
     }
 
     /** @test */
@@ -117,6 +126,8 @@ class OcurrenceServiceTest extends TestCase
 
         #Assertion
         $this->assertEquals(true, $response['response']['success']);
+        $this->assertEquals(200, $response['status_code']);
+        $this->assertInstanceOf(Ocurrence::class, $response['response']['data']);
     }
 
     /** @test */
@@ -148,12 +159,12 @@ class OcurrenceServiceTest extends TestCase
         factory('App\Models\OcurrenceType')->create();
 
         #Creating Ocurrence
-        factory('App\Models\Ocurrence')->create();
+        $ocurrence = factory('App\Models\Ocurrence')->create();
 
         #Calling show() and storing response into a variable
-        $response = $this->service->show(1);
+        $response = $this->service->show($ocurrence->id);
         
         #Assertion
-        $this->assertInstanceOf(OcurrenceResource::class, $response);
+        $this->assertInstanceOf(OcurrenceResource::class, $response['response']['data']);
     }
 }
