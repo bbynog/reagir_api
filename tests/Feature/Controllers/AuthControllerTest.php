@@ -7,10 +7,18 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\User;
 use phpDocumentor\Reflection\Types\Null_;
+use Laravel\Passport\Passport;
+use Illuminate\Support\Facades\Artisan;
 
 class AuthControllerTest extends TestCase
 {
-    use WithFaker;    
+    use WithFaker;   
+    
+    public function setUp(): void
+    {
+        parent::setUp();
+        Artisan::call('passport:install');        
+    }
 
     /** @test */
     public function check_if_registration_is_successful()
@@ -50,9 +58,11 @@ class AuthControllerTest extends TestCase
     /** @test */
     public function check_if_login_is_succesful()
     {
+        $user = factory('App\Models\User')->create(['password' => bcrypt('123456')]);
+
         $response = $this->postJson('api/login', [
-            'email' => 'teste@gmail.com',
-            'password' => 'teste'
+            'email' => $user->email,
+            'password' => '123456'
         ]);
 
         $response->assertJson([

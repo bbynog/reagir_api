@@ -10,6 +10,7 @@ use Laravel\Passport\Passport;
 class OcurrenceTypeControllerTest extends TestCase
 {
     use WithFaker;
+    use RefreshDatabase;
 
     /** @test */
     public function check_if_index_is_showing_list()
@@ -33,15 +34,21 @@ class OcurrenceTypeControllerTest extends TestCase
         Passport::actingAs($user);        
 
         #Posting data as method requests
+        $name = $this->faker->name;
+        $status = $this->faker->randomElement([
+            'leve', 'media', 'pesada'
+        ]);
+        
         $response = $this->postJson('api/ocurrence_types', [
-            'name' => $this->faker->name,
-            'status' => implode($this->faker->randomElements([
-                'leve', 'media', 'pesada'
-            ])),
+            'name' => $name,
+            'status' => $status,
         ]);
         
         #Assertions
-        $response->assertJsonFragment(['success' => true]);
+        $response->assertJson(['success' => true, 'data' => [
+            'name'=> $name,
+            'status' => $status,
+        ]]);
         $response->assertStatus(200);        
     }
 
@@ -58,13 +65,14 @@ class OcurrenceTypeControllerTest extends TestCase
                 'leve', 'media', 'pesada'
             ])),
         ]);
+
         #Assertions
         $response->assertJsonFragment(['The name field is required.']);
         $response->assertStatus(422);        
     }
 
     /** @test */
-    public function check_if_updating_is_succesful()
+    public function check_if_updating_is_successful()
     {
         #Creating and acting as User
         $user = factory('App\Models\User')->create();
@@ -87,7 +95,7 @@ class OcurrenceTypeControllerTest extends TestCase
     }
 
     /** @test */
-    /*public function check_if_updating_is_unsuccesful()
+    public function check_if_updating_is_unsuccessful()
     {
         #Creating and acting as User
         $user = factory('App\Models\User')->create();
@@ -98,17 +106,13 @@ class OcurrenceTypeControllerTest extends TestCase
 
         #Putting data as method DOESN'T request (passing missmatched keys)
         $response = $this->putJson('api/ocurrence_types/' . $type->id, [
-            'last_name' => $this->faker->name,
-            #'status' => implode($this->faker->randomElements([
-            #    'leve', 'media', 'pesada'
-            #]))            
+            'last_name' => $this->faker->name,           
         ]);
-        dd($response);
 
         #Assertions
-        $response->assertJsonFragment(['success' => true]);
-        $response->assertStatus(200);
-    }*/
+        $response->assertJsonFragment(['success' => false]);
+        $response->assertStatus(422);
+    }
 
     /** @test */
     public function check_if_delete_is_deleting()
@@ -125,6 +129,22 @@ class OcurrenceTypeControllerTest extends TestCase
         
         #Assertion
         $response->assertStatus(200);
+        $response->assertJsonFragment(['success' => true]);
+    }
+
+    /** @test */
+    public function check_if_delete_is_not_deleting()
+    {  
+        #Creating and acting as User
+        $user = factory('App\Models\User')->create();
+        Passport::actingAs($user); 
+
+        #Soft Deleting data
+        $response = $this->deleteJson('api/ocurrence_types/999');
+        
+        #Assertion
+        $response->assertStatus(422);
+        $response->assertJsonFragment(['success' => false]);
     }
 
     /** @test */

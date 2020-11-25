@@ -80,7 +80,7 @@ class OcurrenceTypeServiceTest extends TestCase
         $update_response = $this->service->update($data, $type->id);
 
         #Assertion
-        $this->assertEquals(true, $update_response['success']);
+        $this->assertEquals(true, $update_response['response']['success']);
     }
 
     /** @test */
@@ -104,8 +104,8 @@ class OcurrenceTypeServiceTest extends TestCase
         $message = "Invalid Status Type. Accept only ['leve', 'media', 'pesada'].";
 
         #Assertions
-        $this->assertEquals($message, $update_response['data']);
-        $this->assertEquals(false, $update_response['success']);
+        $this->assertEquals($message, $update_response['response']['data']);
+        $this->assertEquals(false, $update_response['response']['success']);
     }
 
     /** @test */
@@ -118,7 +118,7 @@ class OcurrenceTypeServiceTest extends TestCase
         $delete_response = $this->service->delete($type->id);
 
         #Assertion
-        $this->assertEquals(true, $delete_response);        
+        $this->assertEquals(true, $delete_response['response']['success']);        
     }
 
     /** @test */
