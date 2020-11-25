@@ -35,12 +35,12 @@ class OcurrenceTypeServiceTest extends TestCase
         ];
 
         #Calling method save() from service and storing into a variable
-        $save_response = $this->service->save($data);
+        $save = $this->service->save($data);
         
         #Assertions
-        $this->assertContains($data, $save_response); 
-        $this->assertEquals(true, $save_response['success']);
-        $this->assertInstanceOf(OcurrenceType::class, $save_response['data']);
+        $this->assertContains($data, $save); 
+        $this->assertEquals(true, $save['success']);
+        $this->assertInstanceOf(OcurrenceType::class, $save['data']);
     }
 
     /** @test */
@@ -57,11 +57,11 @@ class OcurrenceTypeServiceTest extends TestCase
         $invalid_status = "Invalid Status Type. Accept only ['leve', 'media', 'pesada'].";
 
         #Calling method save() from service
-        $save_response = $this->service->save($data);        
+        $save = $this->service->save($data);        
                 
         #Assertions
-        $this->assertEquals($invalid_status, $save_response['data']);
-        $this->assertEquals(false, $save_response['success']);
+        $this->assertEquals($invalid_status, $save['data']);
+        $this->assertEquals(false, $save['success']);
     }
 
     /** @test */
@@ -83,13 +83,13 @@ class OcurrenceTypeServiceTest extends TestCase
         ];
 
         #Calling update() and storing in a variable
-        $update_response = $this->service->update($data, $type->id);
+        $update = $this->service->update($data, $type->id);
 
         #Assertion
-        $this->assertEquals(true, $update_response['response']['success']);
-        $this->assertContains($name, $update_response['response']);
-        $this->assertContains($status, $update_response['response']);
-        $this->assertInstanceOf(OcurrenceType::class, $update_response['response']['data']);
+        $this->assertEquals(true, $update['response']['success']);
+        $this->assertContains($name, $update['response']);
+        $this->assertContains($status, $update['response']);
+        $this->assertInstanceOf(OcurrenceType::class, $update['response']['data']);
     }
 
     /** @test */
@@ -107,14 +107,14 @@ class OcurrenceTypeServiceTest extends TestCase
         ];
 
         #Calling update() and storing in a variable
-        $update_response = $this->service->update($data, $type->id);
+        $update = $this->service->update($data, $type->id);
 
         #Message of Invalid Type stored in a variable to check assertion
         $message = "Invalid Status Type. Accept only ['leve', 'media', 'pesada'].";
 
         #Assertions
-        $this->assertEquals($message, $update_response['response']['data']);
-        $this->assertEquals(false, $update_response['response']['success']);
+        $this->assertEquals($message, $update['response']['data']);
+        $this->assertEquals(false, $update['response']['success']);
     }
 
     /** @test */
@@ -124,12 +124,12 @@ class OcurrenceTypeServiceTest extends TestCase
         $type = factory('App\Models\OcurrenceType')->create();
 
         #Calling delete() and storing the response
-        $delete_response = $this->service->delete($type->id);
+        $delete = $this->service->delete($type->id);
 
         #Assertion
-        $this->assertEquals(true, $delete_response['response']['success']);
-        $this->assertInstanceOf(OcurrenceType::class, $delete_response['response']['data']);   
-        $this->assertEquals(200, $delete_response['status_code']);     
+        $this->assertEquals(true, $delete['response']['success']);
+        $this->assertInstanceOf(OcurrenceType::class, $delete['response']['data']);   
+        $this->assertEquals(200, $delete['status_code']);     
     }
 
     /** @test */
@@ -139,10 +139,10 @@ class OcurrenceTypeServiceTest extends TestCase
         factory('App\Models\OcurrenceType', 5)->create();
         
          #Calling method list() that gives all Ocurrence Types
-        $list_response = $this->service->list();
+        $list = $this->service->list();
 
         #Assertion
-        $this->assertCount(5, $list_response);
+        $this->assertCount(5, $list);
     }
 
     /** @test */
@@ -152,11 +152,11 @@ class OcurrenceTypeServiceTest extends TestCase
         $type = factory('App\Models\OcurrenceType')->create(['name' => 'teste']);
 
         #Calling method show() and saving into variable
-        $show_response = $this->service->show($type->id);
+        $show = $this->service->show($type->id);
 
         #Assertion
-        $this->assertInstanceOf(OcurrenceType::class, $show_response);
-        $this->assertEquals('teste', $show_response->name);
+        $this->assertInstanceOf(OcurrenceType::class, $show);
+        $this->assertEquals('teste', $show->name);
     }
 
     /** @test */
@@ -176,12 +176,12 @@ class OcurrenceTypeServiceTest extends TestCase
         ];
 
         #Calling method changeStatus() and storing into variable
-        $response = $this->service->changeStatus($data['status'], $type->id);
+        $status_r = $this->service->changeStatus($data['status'], $type->id);
 
         #Assertion
-        $this->assertEquals(true, $response['success']);
-        $this->assertInstanceOf(OcurrenceType::class, $response['data']);
-        $this->assertEquals($status, $response['data']->status);
+        $this->assertEquals(true, $status_r['success']);
+        $this->assertInstanceOf(OcurrenceType::class, $status_r['data']);
+        $this->assertEquals($status, $status_r['data']->status);
     }
 
     /** @test */
@@ -198,14 +198,14 @@ class OcurrenceTypeServiceTest extends TestCase
         ];
 
         #Calling method changeStatus() and storing into variable
-        $response = $this->service->changeStatus($data['status'], $type->id);
+        $change_status = $this->service->changeStatus($data['status'], $type->id);
 
         #Invalid Status message
         $message = "Invalid Status Type. Accept only ['leve', 'media', 'pesada'].";
 
         #Assertion
-        $this->assertEquals(false, $response['success']);
-        $this->assertEquals($message, $response['data']);
+        $this->assertEquals(false, $change_status['success']);
+        $this->assertEquals($message, $change_status['data']);
     }
 
     /** @test */
@@ -219,10 +219,10 @@ class OcurrenceTypeServiceTest extends TestCase
         ];
 
         #Calling validadeStatus() and storing response into variable
-        $response = $this->service->validateStatus($data['status']);
+        $validate_status = $this->service->validateStatus($data['status']);
 
         #Assertion
-        $this->assertEquals(true, $response);
+        $this->assertEquals(true, $validate_status);
     }
 
     /** @test */
@@ -236,10 +236,10 @@ class OcurrenceTypeServiceTest extends TestCase
         ];
 
         #Calling validadeStatus() and storing response into variable
-        $response = $this->service->validateStatus($data['status']);
+        $validate_status = $this->service->validateStatus($data['status']);
 
         #Assertion
-        $this->assertEquals(false, $response);
+        $this->assertEquals(false, $validate_status);
     }
 
     /** @test */
@@ -249,10 +249,10 @@ class OcurrenceTypeServiceTest extends TestCase
         $type = factory('App\Models\OcurrenceType')->create();        
 
         #Calling getType and storing response into variable
-        $response = $this->service->getType($type->name);
+        $get_type = $this->service->getType($type->name);
 
         #Assertion
-        $this->assertEquals($response->id, $type->id);
-        $this->assertInstanceOf(OcurrenceType::class, $response);
+        $this->assertEquals($get_type->id, $type->id);
+        $this->assertInstanceOf(OcurrenceType::class, $get_type);
     }
 }
