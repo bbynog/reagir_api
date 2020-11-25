@@ -46,13 +46,13 @@ class OcurrenceServiceTest extends TestCase
         ];
 
         #Calling method save() and storing response into a variable
-        $response = $this->service->save($data);
+        $save = $this->service->save($data);
         
         #Assertion
-        $this->assertEquals($response['success'], true);
-        $this->assertContains($violence_type, $response); 
-        $this->assertContains($what_to_do, $response);    
-        $this->assertInstanceOf(OcurrenceResource::class, $response['data']);   
+        $this->assertEquals($save['success'], true);
+        $this->assertContains($violence_type, $save); 
+        $this->assertContains($what_to_do, $save);    
+        $this->assertInstanceOf(OcurrenceResource::class, $save['data']);   
     }
 
     /** @test */
@@ -70,14 +70,14 @@ class OcurrenceServiceTest extends TestCase
         ];
 
         #Calling method save() and storing response into a variable
-        $response = $this->service->save($data);
+        $save = $this->service->save($data);
     
         #Creating Invalid Type message variable
         $message = "Type doesn't exist.";
 
         #Assertion
-        $this->assertEquals($response['success'], false);
-        $this->assertEquals($response['data'], $message);
+        $this->assertEquals($save['success'], false);
+        $this->assertEquals($save['data'], $message);
     }
 
     /** @test */
@@ -101,12 +101,12 @@ class OcurrenceServiceTest extends TestCase
         ];
 
         #Calling update() and storing response into variable
-        $response = $this->service->update($data, $ocurrence->id);
+        $update = $this->service->update($data, $ocurrence->id);
 
         #Assertion
-        $this->assertEquals($response['response']['success'], true);
-        $this->assertInstanceOf(OcurrenceResource::class, $response['response']['data']);
-        $this->assertContains($what_to_do, $response['response']);
+        $this->assertEquals($update['response']['success'], true);
+        $this->assertInstanceOf(OcurrenceResource::class, $update['response']['data']);
+        $this->assertContains($what_to_do, $update['response']);
     }
 
     /** @test */
@@ -122,12 +122,12 @@ class OcurrenceServiceTest extends TestCase
         $ocurrence = factory('App\Models\Ocurrence')->create();
 
         #Calling delete() and storing response into variable
-        $response = $this->service->delete($ocurrence->id);
+        $delete = $this->service->delete($ocurrence->id);
 
         #Assertion
-        $this->assertEquals(true, $response['response']['success']);
-        $this->assertEquals(200, $response['status_code']);
-        $this->assertInstanceOf(Ocurrence::class, $response['response']['data']);
+        $this->assertEquals(true, $delete['response']['success']);
+        $this->assertEquals(200, $delete['status_code']);
+        $this->assertInstanceOf(Ocurrence::class, $delete['response']['data']);
     }
 
     /** @test */
@@ -143,10 +143,10 @@ class OcurrenceServiceTest extends TestCase
         factory('App\Models\Ocurrence', 5)->create();
 
         #Calling method list() and storing response into a variable
-        $response = $this->service->list();
+        $list = $this->service->list();
 
         #Assertion
-        $this->assertCount(5, $response);
+        $this->assertCount(5, $list);
     }
 
     /** @test */
@@ -162,9 +162,9 @@ class OcurrenceServiceTest extends TestCase
         $ocurrence = factory('App\Models\Ocurrence')->create();
 
         #Calling show() and storing response into a variable
-        $response = $this->service->show($ocurrence->id);
+        $show = $this->service->show($ocurrence->id);
         
         #Assertion
-        $this->assertInstanceOf(OcurrenceResource::class, $response['response']['data']);
+        $this->assertInstanceOf(OcurrenceResource::class, $show['response']['data']);
     }
 }
