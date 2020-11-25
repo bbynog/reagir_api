@@ -8,10 +8,10 @@ use Faker\Generator as Faker;
 $factory->define(OcurrenceType::class, function (Faker $faker) {
     return [
         'name' => $faker->name,
-        'status' => implode($faker->randomElements([
+        'status' => $faker->randomElement([
             'leve',
             'media',
             'pesada',
-        ])),            
+        ]),            
     ];
 });

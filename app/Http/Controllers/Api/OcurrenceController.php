@@ -46,14 +46,14 @@ class OcurrenceController extends Controller
     {
         $ocurrence = $this->service->update($request->all(), $id);
 
-        return response($ocurrence, 200);
+        return response($ocurrence['response'], $ocurrence['status_code']);
     }
 
-    public function delete(Request $request, $id)
+    public function delete($id)
     {
         $ocurrence = $this->service->delete($id);
 
-        return response($ocurrence, 200);
+        return response($ocurrence['response'], $ocurrence['status_code']);
     }
 
     public function show($id)

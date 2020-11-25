@@ -83,6 +83,9 @@ class OcurrenceTypeService
                 "status_code" => 422
             ];
         }
+
+        $ocurrence_type->delete();
+
         return [
             "response" => [
                 "data" => $ocurrence_type,

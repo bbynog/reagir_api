@@ -12,6 +12,7 @@ use Faker\Generator as Faker;
 class UserServiceTest extends TestCase
 {
     use WithFaker;
+    use RefreshDatabase;
 
     private $userService;
     private $user;

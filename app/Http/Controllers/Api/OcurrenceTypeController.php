@@ -43,7 +43,7 @@ class OcurrenceTypeController extends Controller
         return response($ocurrence_type['response'], $ocurrence_type['status_code']);
     }
 
-    public function delete(Request $request, $id)
+    public function delete($id)
     {
         $ocurrence_type = $this->service->delete($id);
 

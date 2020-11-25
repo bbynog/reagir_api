@@ -8,10 +8,12 @@ use Tests\TestCase;
 use App\Models\Ocurrence;
 use App\Services\OcurrenceService;
 use App\Http\Resources\OcurrenceResource;
+use Laravel\Passport\Passport;
 
 class OcurrenceServiceTest extends TestCase
 {
     use WithFaker;
+    use RefreshDatabase;
 
     private $ocurrence;
     private $service;
@@ -43,6 +45,7 @@ class OcurrenceServiceTest extends TestCase
         #Calling method save() and storing response into a variable
         $response = $this->service->save($data);
         
+        #testar instanceof, valores
         #Assertion
         $this->assertEquals($response['success'], true);
     }
@@ -75,8 +78,14 @@ class OcurrenceServiceTest extends TestCase
     /** @test */
     public function check_if_update_ocurrence_is_successful()
     {       
+        #Creating User and actingAs
+        factory('App\Models\User')->create();
+
+        #Creating Ocurrence Type
+        factory('App\Models\OcurrenceType')->create();
+
         #Creating an Ocurrence to pass ID into update()
-        $ocurrence = factory('App\Models\Ocurrence')->create();
+        $ocurrence = factory('App\Models\Ocurrence')->create();        
 
         #Creating Data to pass into update()
         $data = [
@@ -86,13 +95,20 @@ class OcurrenceServiceTest extends TestCase
         #Calling update() and storing response into variable
         $response = $this->service->update($data, $ocurrence->id);
 
+        #instanceof, variavel/faker
         #Assertion
-        $this->assertEquals($response['success'], true);
+        $this->assertEquals($response['response']['success'], true);
     }
 
     /** @test */
     public function check_if_delete_ocurrence_is_deleting()
     {
+        #Creating User and actingAs
+        factory('App\Models\User')->create();
+
+        #Creating Ocurrence Type
+        factory('App\Models\OcurrenceType')->create();
+
         #Creating an Ocurrence to pass ID into delete()
         $ocurrence = factory('App\Models\Ocurrence')->create();
 
@@ -100,32 +116,44 @@ class OcurrenceServiceTest extends TestCase
         $response = $this->service->delete($ocurrence->id);
 
         #Assertion
-        $this->assertEquals($response, true);
+        $this->assertEquals(true, $response['response']['success']);
     }
 
     /** @test */
     public function check_if_list_ocurrences_is_successful()
     {
-        #Creating an Ocurrence instance to get all Ocurrences
-        $all_ocurrences = OcurrenceResource::collection($this->ocurrence->all());
+        #Creating User and actingAs
+        factory('App\Models\User')->create();
+
+        #Creating Ocurrence Type
+        factory('App\Models\OcurrenceType')->create();
+
+        #Creating Ocurrences
+        factory('App\Models\Ocurrence', 5)->create();
 
         #Calling method list() and storing response into a variable
         $response = $this->service->list();
 
         #Assertion
-        $this->assertEquals($all_ocurrences, $response);
+        $this->assertCount(5, $response);
     }
 
     /** @test */
     public function check_if_show_ocurrence_by_id_is_showing()
     {
-        #Creating an Ocurrence to pass ID into show()
-        $ocurrence = $this->ocurrence->find(1);
+        #Creating User and actingAs
+        factory('App\Models\User')->create();
+
+        #Creating Ocurrence Type
+        factory('App\Models\OcurrenceType')->create();
+
+        #Creating Ocurrence
+        factory('App\Models\Ocurrence')->create();
 
         #Calling show() and storing response into a variable
-        $response = $this->service->show($ocurrence->id);
+        $response = $this->service->show(1);
         
         #Assertion
-        $this->assertEquals(new OcurrenceResource($ocurrence), $response);
+        $this->assertInstanceOf(OcurrenceResource::class, $response);
     }
 }

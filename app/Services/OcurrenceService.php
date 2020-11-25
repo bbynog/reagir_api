@@ -12,6 +12,8 @@ class OcurrenceService
     private $ocurrence;
     private $ocurrenceTypeService;
 
+    const FIELDS = ['violence_type', 'what_to_do', 'type_name'];
+
     public function __construct(Ocurrence $ocurrence, OcurrenceTypeService $ocurrenceTypeService)
     {
         $this->ocurrence = $ocurrence;
@@ -42,6 +44,16 @@ class OcurrenceService
 
     public function update(array $data, $id)
     {
+        if (!$this->validateFields($data)) {
+            return [
+                "response" => [
+                    "data" => "Need to choose at least one field to update. [" . implode(', ', self::FIELDS) . "]",
+                    "success" => false,
+                ], 
+                "status_code" => 422
+            ];
+        }
+
         if (!empty($data['type_name'])) {
             $type = $this->ocurrenceTypeService->getType($data['type_name']);         
             if (is_null($type)) {                
@@ -58,17 +70,36 @@ class OcurrenceService
         $ocurrence->update($data);
         
         return [
-            "data" => new OcurrenceResource($ocurrence),
-            "success" => true 
+            "response" => [
+                "data" => new OcurrenceResource($ocurrence),
+                "success" => true 
+            ],
+            "status_code" => 200
         ];
     }
 
     public function delete($id)
     {
         $ocurrence = $this->ocurrence->find($id);
-        $deleted = $ocurrence->delete();
+        if ($ocurrence === null) {
+            return [
+                "response" => [
+                    "data" => "Inexistent Type ID. Please enter a valid one.",
+                    "success" => false,
+                ],
+                "status_code" => 422
+            ];
+        }
 
-        return $deleted;
+        $ocurrence->delete();
+
+        return [
+            "response" => [
+                "data" => $ocurrence,
+                "success" => true,
+            ],
+            "status_code" => 200
+        ];
     }
 
     public function list()
@@ -80,4 +111,15 @@ class OcurrenceService
     {        
         return new OcurrenceResource($this->ocurrence->find($id));   
     }   
+
+    private function validateFields(array $data): bool
+    {
+        foreach(self::FIELDS as $value) {
+            if (array_key_exists($value, $data)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

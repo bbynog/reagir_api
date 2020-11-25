@@ -11,6 +11,7 @@ use App\Models\Ocurrence;
 class OcurrenceControllerTest extends TestCase
 {   
     use WithFaker;
+    use RefreshDatabase;
 
     private $ocurrence;
 
@@ -26,6 +27,9 @@ class OcurrenceControllerTest extends TestCase
         #Creating and acting as User
         $user = factory('App\Models\User')->create();
         Passport::actingAs($user);
+
+        #Creating Ocurrence Type
+        factory('App\Models\OcurrenceType')->create();
           
         #Creating Ocurrence and storing into variable
         $ocurrence = factory('App\Models\Ocurrence')->create();
@@ -35,7 +39,8 @@ class OcurrenceControllerTest extends TestCase
         
         #Assertions
         $response->assertStatus(200);
-        $response->assertJsonFragment([$ocurrence->what_to_do]);                        
+        $response->assertJsonFragment([$ocurrence->what_to_do]);
+        $response->assertJsonFragment([$ocurrence->violence_type]);                         
     }
 
     /** @test */
@@ -45,15 +50,22 @@ class OcurrenceControllerTest extends TestCase
         $user = factory('App\Models\User')->create();
         Passport::actingAs($user);
 
+        #Creating Ocurrence Type
+        factory('App\Models\OcurrenceType')->create();
+
+        #Creating Ocurrences
+        $ocurrences = factory('App\Models\Ocurrence', 5)->create();
+
         #Calling getJson and storing response into variable
         $response = $this->getJson('/api/ocurrences/');
 
         #Assertion
         $response->assertStatus(200);
+        $response->assertJsonFragment([$ocurrences->find(2)->what_to_do]);
     }
 
     /** @test */
-    public function check_if_store_is_successful()
+    public function check_if_store_ocurrences_is_successful()
     {
         #Creating and acting as User
         $user = factory('App\Models\User')->create();
@@ -62,15 +74,24 @@ class OcurrenceControllerTest extends TestCase
         #Creating Ocurrence Type to pass type_name
         $type = factory('App\Models\OcurrenceType')->create();
 
+        #Creating variables
+        $violence_type = $this->faker->name;
+        $what_to_do = $this->faker->paragraph;
+
         #Calling postJson with required data and storing into variable
         $response = $this->postJson('api/ocurrences', [
-            'violence_type' => $this->faker->name,
-            'what_to_do' => $this->faker->paragraph,
+            'violence_type' => $violence_type,
+            'what_to_do' => $what_to_do,
             'type_name' => $type->name
         ]);
-
+        
         #Assertion
-        $response->assertStatus(200);       
+        $response->assertStatus(200); 
+        $response->assertJson(['success' => true, 'data' => [
+            'violence_type'=> $violence_type,
+            'what_to_do' => $what_to_do,
+        ]]);  
+          
     }
 
     /** @test */
@@ -104,16 +125,47 @@ class OcurrenceControllerTest extends TestCase
         $user = factory('App\Models\User')->create();
         Passport::actingAs($user);
 
+        #Creating Ocurrence Type
+        factory('App\Models\OcurrenceType')->create();
+
         #Creating Ocurrence to get ID
         $ocurrence = factory('App\Models\Ocurrence')->create();
 
+        #Creating variables
+        $what_to_do = $this->faker->paragraph;
+
         #Calling putJson and storing into variable
         $response = $this->putJson('api/ocurrences/' . $ocurrence->id, [
-            'what_to_do' => $this->faker->paragraph
+            'what_to_do' => $what_to_do
         ]);
 
         #Assertion
-        $response->assertStatus(200);       
+        $response->assertStatus(200); 
+        $response->assertJsonFragment([$what_to_do]); 
+        $response->assertJsonFragment(['success' => true]);     
+    }
+
+    /** @test */
+    public function check_if_updating_ocurrence_is_unsuccessful()
+    {
+        #Creating and acting as User
+        $user = factory('App\Models\User')->create();
+        Passport::actingAs($user); 
+
+        #Creating Ocurrence Type
+        factory('App\Models\OcurrenceType')->create();
+
+        #Creating Ocurrence to test update()
+        $ocurrence = factory('App\Models\Ocurrence')->create();
+
+        #Putting data as method DOESN'T request (passing missmatched keys)
+        $response = $this->putJson('api/ocurrences/' . $ocurrence->id, [
+            'last_name' => $this->faker->name,           
+        ]);
+
+        #Assertions
+        $response->assertJsonFragment(['success' => false]);
+        $response->assertStatus(422);
     }
 
     /** @test */
@@ -123,6 +175,9 @@ class OcurrenceControllerTest extends TestCase
         $user = factory('App\Models\User')->create();
         Passport::actingAs($user);
 
+        #Creating Ocurrence Type
+        factory('App\Models\OcurrenceType')->create();
+
         #Creating Ocurrence to get ID
         $ocurrence = factory('App\Models\Ocurrence')->create();
 
@@ -131,5 +186,23 @@ class OcurrenceControllerTest extends TestCase
 
         #Assertion
         $response->assertStatus(200);
+        $response->assertJsonFragment(['success' => true]);
+        $response->assertJsonFragment([$ocurrence->what_to_do]);
+    }
+
+    /** @test */
+    public function check_if_delete_ocurrences_is_throwing_error_wrong_id()
+    {  
+        #Creating and acting as User
+        $user = factory('App\Models\User')->create();
+        Passport::actingAs($user); 
+
+        #Soft Deleting data
+        $response = $this->deleteJson('api/ocurrences/999');
+        
+        #Assertion
+        $response->assertStatus(422);
+        $response->assertJsonFragment(['success' => false]);
+        $response->assertJsonFragment(['data' => 'Inexistent Type ID. Please enter a valid one.']);
     }
 }

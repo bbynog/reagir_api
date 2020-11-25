@@ -12,7 +12,8 @@ use Illuminate\Support\Facades\Artisan;
 
 class AuthControllerTest extends TestCase
 {
-    use WithFaker;   
+    use WithFaker;  
+    use RefreshDatabase; 
     
     public function setUp(): void
     {

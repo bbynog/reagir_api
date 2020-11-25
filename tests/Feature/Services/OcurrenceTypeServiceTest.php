@@ -11,6 +11,7 @@ use App\Services\OcurrenceTypeService;
 class OcurrenceTypeServiceTest extends TestCase
 {
     use WithFaker;
+    use RefreshDatabase;
 
     private $ocurrenceType;
     private $service;
@@ -28,9 +29,9 @@ class OcurrenceTypeServiceTest extends TestCase
         #Storing data as required on method save() from service       
         $data = [
             'name' => $this->faker->name,
-            'status' => implode($this->faker->randomElements([
+            'status' => $this->faker->randomElement([
                 'leve', 'media', 'pesada'
-            ]))
+            ])
         ];
 
         #Calling method save() from service and storing into a variable
@@ -47,9 +48,9 @@ class OcurrenceTypeServiceTest extends TestCase
         #Storing data as NOT required on method save() validation from service       
         $data = [
             'name' => $this->faker->name,
-            'status' => implode($this->faker->randomElements([
+            'status' => $this->faker->randomElement([
                 'light', 'medium', 'heavy'
-            ]))
+            ])
         ];
 
         $invalid_status = "Invalid Status Type. Accept only ['leve', 'media', 'pesada'].";
