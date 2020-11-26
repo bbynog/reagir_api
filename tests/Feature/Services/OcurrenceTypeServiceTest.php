@@ -26,6 +26,8 @@ class OcurrenceTypeServiceTest extends TestCase
     /** @test */
     public function check_if_save_type_service_is_successful()
     {    
+        #Creating variables
+
         #Storing data as required on method save() from service       
         $data = [
             'name' => $this->faker->name,
@@ -38,8 +40,9 @@ class OcurrenceTypeServiceTest extends TestCase
         $save = $this->service->save($data);
         
         #Assertions
-        $this->assertContains($data, $save); 
-        $this->assertEquals(true, $save['success']);
+        $this->assertEquals($data['name'], $save['data']['name']);
+        $this->assertEquals($data['status'], $save['data']['status']); 
+        $this->assertEquals($save['success'], true);
         $this->assertInstanceOf(OcurrenceType::class, $save['data']);
     }
 
@@ -87,8 +90,8 @@ class OcurrenceTypeServiceTest extends TestCase
 
         #Assertion
         $this->assertEquals(true, $update['response']['success']);
-        $this->assertContains($name, $update['response']);
-        $this->assertContains($status, $update['response']);
+        $this->assertEquals($name, $update['response']['data']['name']);
+        $this->assertEquals($status, $update['response']['data']['status']);
         $this->assertInstanceOf(OcurrenceType::class, $update['response']['data']);
     }
 
@@ -133,30 +136,52 @@ class OcurrenceTypeServiceTest extends TestCase
     }
 
     /** @test */
+    public function check_if_delete_type_is_throwing_error_wrong_id()
+    {
+        #Calling delete() and storing the response
+        $delete = $this->service->delete(999);
+
+        #Wrong ID message
+        $message = "Inexistent Type ID. Please enter a valid one.";
+
+        #Assertion
+        $this->assertEquals(false, $delete['response']['success']);
+        $this->assertEquals($message, $delete['response']['data']);  
+        $this->assertEquals(422, $delete['status_code']);     
+    }
+
+    /** @test */
     public function check_if_list_is_showing_all_ocurrence_types()
     {
         #Creating Types
-        factory('App\Models\OcurrenceType', 5)->create();
+        $types = factory('App\Models\OcurrenceType', 5)->create();
         
          #Calling method list() that gives all Ocurrence Types
         $list = $this->service->list();
 
         #Assertion
         $this->assertCount(5, $list);
+
+        for ($i=0; $i < count($types); $i++) {
+            $this->assertEquals($types[$i]->name, $list[$i]['name']);
+            $this->assertEquals($types[$i]->status, $list[$i]['status']);
+        }
     }
 
     /** @test */
     public function check_if_show_is_showing_by_id()
     {
         #Creating Ocurrence Type to check show()
-        $type = factory('App\Models\OcurrenceType')->create(['name' => 'teste']);
+        $type = factory('App\Models\OcurrenceType')->create();
 
         #Calling method show() and saving into variable
         $show = $this->service->show($type->id);
 
         #Assertion
         $this->assertInstanceOf(OcurrenceType::class, $show);
-        $this->assertEquals('teste', $show->name);
+        $this->assertEquals($show->name, $type->name);
+        $this->assertEquals($show->status, $type->status);
+
     }
 
     /** @test */

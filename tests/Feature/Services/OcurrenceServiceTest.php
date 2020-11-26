@@ -47,11 +47,12 @@ class OcurrenceServiceTest extends TestCase
 
         #Calling method save() and storing response into a variable
         $save = $this->service->save($data);
+        #dd($save);
         
         #Assertion
-        $this->assertEquals($save['success'], true);
-        $this->assertContains($violence_type, $save); 
-        $this->assertContains($what_to_do, $save);    
+        $this->assertEquals($save['success'], true); 
+        $this->assertEquals($save['data']['violence_type'], $violence_type);
+        $this->assertEquals($save['data']['what_to_do'], $what_to_do);    
         $this->assertInstanceOf(OcurrenceResource::class, $save['data']);   
     }
 
@@ -95,18 +96,13 @@ class OcurrenceServiceTest extends TestCase
         #Creating Variables
         $what_to_do = $this->faker->paragraph;
 
-        #Creating Data to pass into update()
-        $data = [
-            'what_to_do' => $what_to_do
-        ];
-
         #Calling update() and storing response into variable
-        $update = $this->service->update($data, $ocurrence->id);
+        $update = $this->service->update(['what_to_do' => $what_to_do], $ocurrence->id);
 
         #Assertion
         $this->assertEquals($update['response']['success'], true);
         $this->assertInstanceOf(OcurrenceResource::class, $update['response']['data']);
-        $this->assertContains($what_to_do, $update['response']);
+        $this->assertEquals($update['response']['data']['what_to_do'], $what_to_do);
     }
 
     /** @test */
@@ -127,7 +123,27 @@ class OcurrenceServiceTest extends TestCase
         #Assertion
         $this->assertEquals(true, $delete['response']['success']);
         $this->assertEquals(200, $delete['status_code']);
-        $this->assertInstanceOf(Ocurrence::class, $delete['response']['data']);
+    }
+
+    /** @test */
+    public function check_if_delete_ocurrence_is_throwing_error_wrong_id()
+    {
+        #Creating User
+        factory('App\Models\User')->create();
+
+        #Creating Ocurrence Type
+        factory('App\Models\OcurrenceType')->create();
+
+        #Calling delete() and storing response into variable
+        $delete = $this->service->delete(999);
+
+        #Wrong ID message
+        $message = "Inexistent Ocurrence ID. Please enter a valid one.";
+
+        #Assertion
+        $this->assertEquals(false, $delete['response']['success']);
+        $this->assertEquals($message, $delete['response']['data']);
+        $this->assertEquals(422, $delete['status_code']);
     }
 
     /** @test */
@@ -140,13 +156,18 @@ class OcurrenceServiceTest extends TestCase
         factory('App\Models\OcurrenceType')->create();
 
         #Creating Ocurrences
-        factory('App\Models\Ocurrence', 5)->create();
+        $ocurrences = factory('App\Models\Ocurrence', 5)->create();
 
         #Calling method list() and storing response into a variable
         $list = $this->service->list();
 
         #Assertion
         $this->assertCount(5, $list);
+
+        for ($i=0; $i < count($ocurrences); $i++) {
+            $this->assertEquals($ocurrences[$i]->violence_type, $list[$i]['violence_type']);
+            $this->assertEquals($ocurrences[$i]->what_to_do, $list[$i]['what_to_do']);
+        }
     }
 
     /** @test */
@@ -166,5 +187,7 @@ class OcurrenceServiceTest extends TestCase
         
         #Assertion
         $this->assertInstanceOf(OcurrenceResource::class, $show['response']['data']);
+        $this->assertEquals($show['response']['data']['violence_type'], $ocurrence->violence_type);
+        $this->assertEquals($show['response']['data']['what_to_do'], $ocurrence->what_to_do);
     }
 }

@@ -34,6 +34,10 @@ class AuthControllerTest extends TestCase
             'token_type' => 'Bearer'
         ]);
         $response->assertStatus(200);   
+        $response->assertJsonStructure([
+            'token_type',
+            'token'
+        ]);
     }
 
     /** @test */
@@ -57,7 +61,7 @@ class AuthControllerTest extends TestCase
     }
 
     /** @test */
-    public function check_if_login_is_succesful()
+    public function check_if_login_is_successful()
     {
         $user = factory('App\Models\User')->create(['password' => bcrypt('123456')]);
 
@@ -70,6 +74,10 @@ class AuthControllerTest extends TestCase
             'token_type' => 'Bearer'
         ]);
         $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'token_type',
+            'token'
+        ]);
     }
 
     /** @test */

@@ -30,15 +30,19 @@ class OcurrenceTypeControllerTest extends TestCase
 
         #Creating Ocurrence Types and creating a type variable
         $types = factory('App\Models\OcurrenceType', 5)->create();
-        $type = factory('App\Models\OcurrenceType')->create();
 
         #Getting list of Ocurrence Types
         $response = $this->getJson('api/ocurrence_types');
+        $response_decoded = $response->decodeResponseJson();
         
         #Assertions
         $response->assertStatus(200);
-        $response->assertJsonFragment([$type->name]);
-        #$response->assertJsonFragment([$types->find(2)->status]);
+        $this->assertCount(5, $response_decoded);
+
+        for ($i = 0; $i < count($types); $i++) {
+            $this->assertEquals($types[$i]->name, $response_decoded[$i]['name']);
+            $this->assertEquals($types[$i]->status, $response_decoded[$i]['status']);
+        }                        
     }
 
     /** @test */
@@ -58,7 +62,7 @@ class OcurrenceTypeControllerTest extends TestCase
             'name' => $name,
             'status' => $status,
         ]);
-        
+
         #Assertions
         $response->assertJson(['success' => true, 'data' => [
             'name'=> $name,
@@ -82,7 +86,14 @@ class OcurrenceTypeControllerTest extends TestCase
         ]);
 
         #Assertions
-        $response->assertJsonFragment(['The name field is required.']);
+        $response->assertJson([
+            'message' => "The given data was invalid.",
+            'errors' => [
+                'name' => [
+                    0 => "The name field is required." 
+                ]
+            ]
+        ]);
         $response->assertStatus(422);        
     }
 
@@ -98,19 +109,25 @@ class OcurrenceTypeControllerTest extends TestCase
 
         #Creating variables
         $name = $this->faker->name;
+        $status = $this->faker->randomElement([
+            'leve', 'media', 'pesada'
+        ]);
 
         #Putting data as method requests
         $response = $this->putJson('api/ocurrence_types/' . $type->id, [
             'name' => $name,
-            'status' => $this->faker->randomElement([
-                'leve', 'media', 'pesada'
-            ])
+            'status' => $status
         ]);
 
         #Assertions 
         $response->assertStatus(200);
-        $response->assertJsonFragment([$name]);
-        $response->assertJsonFragment(['success' => true]);
+        $response->assertJson([
+            'success' => true,
+            'data' => [
+                'name' => $name,
+                'status' => $status
+            ]
+        ]);
     }
 
     /** @test */
@@ -129,7 +146,10 @@ class OcurrenceTypeControllerTest extends TestCase
         ]);
 
         #Assertions
-        $response->assertJsonFragment(['success' => false]);
+        $response->assertJson([
+            'success' => false,
+            'data' => "Need to choose at least one field to update. [name, status]"
+            ]);
         $response->assertStatus(422);
     }
 
@@ -148,8 +168,14 @@ class OcurrenceTypeControllerTest extends TestCase
         
         #Assertion
         $response->assertStatus(200);
-        $response->assertJsonFragment(['success' => true]);
-        $response->assertJsonFragment([$type->name]);
+        $response->assertJson([
+            'success' => true,
+            'data' => [
+                'id' => $type->id,
+                'name' => $type->name,
+                'status' => $type->status
+            ]
+            ]);
     }
 
     /** @test */
@@ -161,11 +187,13 @@ class OcurrenceTypeControllerTest extends TestCase
 
         #Soft Deleting data
         $response = $this->deleteJson('api/ocurrence_types/999');
-        
+    
         #Assertion
         $response->assertStatus(422);
-        $response->assertJsonFragment(['success' => false]);
-        $response->assertJsonFragment(['data' => 'Inexistent Type ID. Please enter a valid one.']);
+        $response->assertJson([
+            'success' => false,
+            'data' => 'Inexistent Type ID. Please enter a valid one.'
+            ]);
     }
 
     /** @test */
@@ -183,8 +211,11 @@ class OcurrenceTypeControllerTest extends TestCase
         
         #Assertion
         $response->assertStatus(200);
-        $response->assertJsonFragment([$type->name]);
-        $response->assertJsonFragment([$type->status]);
+        $response->assertJson([
+            'id' => $type->id,
+            'name' => $type->name,
+            'status' => $type->status            
+        ]);
     }
 
     /** @test */
@@ -209,8 +240,15 @@ class OcurrenceTypeControllerTest extends TestCase
 
         #Assertions
         $response->assertStatus(200);
-        $response->assertJsonFragment(['success' => true]);
-        $response->assertJsonFragment([$status]);
+        $response->assertJson([
+            'success' => true,
+            'data' => [
+                'id' => $type->id,
+                'name' => $type->name,
+                'status' => $status
+            ]
+            ]);
+        
     }
     
 }

@@ -82,7 +82,7 @@ class OcurrenceService
     public function delete($id)
     {
         $ocurrence = $this->ocurrence->find($id);
-        if ($ocurrence === null) {
+        if (empty($ocurrence)) {
             return [
                 "response" => [
                     "data" => "Inexistent Ocurrence ID. Please enter a valid one.",
@@ -92,12 +92,11 @@ class OcurrenceService
             ];
         }
 
-        $ocurrence->delete();
+        
 
         return [
             "response" => [
-                "data" => $ocurrence,
-                "success" => true,
+                "success" => $ocurrence->delete(),
             ],
             "status_code" => 200
         ];
