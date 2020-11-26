@@ -38,7 +38,7 @@ class OcurrenceTypeServiceTest extends TestCase
 
         #Calling method save() from service and storing into a variable
         $save = $this->service->save($data);
-        
+
         #Assertions
         $this->assertEquals($data['name'], $save['data']['name']);
         $this->assertEquals($data['status'], $save['data']['status']); 
@@ -48,8 +48,8 @@ class OcurrenceTypeServiceTest extends TestCase
 
     /** @test */
     public function check_if_save_type_service_validation_is_unsuccessful()
-    {    
-        #Storing data as NOT required on method save() validation from service       
+    {
+        #Storing data as NOT required on method save() validation from service
         $data = [
             'name' => $this->faker->name,
             'status' => $this->faker->randomElement([
@@ -60,8 +60,8 @@ class OcurrenceTypeServiceTest extends TestCase
         $invalid_status = "Invalid Status Type. Accept only ['leve', 'media', 'pesada'].";
 
         #Calling method save() from service
-        $save = $this->service->save($data);        
-                
+        $save = $this->service->save($data);
+
         #Assertions
         $this->assertEquals($invalid_status, $save['data']);
         $this->assertEquals(false, $save['success']);
@@ -131,8 +131,8 @@ class OcurrenceTypeServiceTest extends TestCase
 
         #Assertion
         $this->assertEquals(true, $delete['response']['success']);
-        $this->assertInstanceOf(OcurrenceType::class, $delete['response']['data']);   
-        $this->assertEquals(200, $delete['status_code']);     
+        $this->assertInstanceOf(OcurrenceType::class, $delete['response']['data']);
+        $this->assertEquals(200, $delete['status_code']);
     }
 
     /** @test */
@@ -184,6 +184,8 @@ class OcurrenceTypeServiceTest extends TestCase
 
     }
 
+    # Criar cenário de erro para o show (por exemplo se não vier um ID
+
     /** @test */
     public function check_if_change_status_is_successful()
     {
@@ -197,7 +199,7 @@ class OcurrenceTypeServiceTest extends TestCase
 
         #Creating data as required to change status
         $data = [
-            'status' => $status            
+            'status' => $status
         ];
 
         #Calling method changeStatus() and storing into variable
@@ -271,7 +273,7 @@ class OcurrenceTypeServiceTest extends TestCase
     public function check_if_get_type_is_getting_by_name()
     {
         #Creating Ocurrence Type to check getType()
-        $type = factory('App\Models\OcurrenceType')->create();        
+        $type = factory('App\Models\OcurrenceType')->create();
 
         #Calling getType and storing response into variable
         $get_type = $this->service->getType($type->name);
