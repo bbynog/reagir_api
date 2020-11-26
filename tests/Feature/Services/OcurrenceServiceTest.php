@@ -37,7 +37,7 @@ class OcurrenceServiceTest extends TestCase
         #Creating variables
         $violence_type = $this->faker->name;
         $what_to_do = $this->faker->paragraph;
-        #Storing data as required on method save() from service       
+        #Storing data as required on method save() from service
         $data = [
             'violence_type' => $violence_type,
             'what_to_do' => $what_to_do,
@@ -47,12 +47,12 @@ class OcurrenceServiceTest extends TestCase
 
         #Calling method save() and storing response into a variable
         $save = $this->service->save($data);
-        
+
         #Assertion
         $this->assertEquals($save['success'], true);
-        $this->assertContains($violence_type, $save); 
-        $this->assertContains($what_to_do, $save);    
-        $this->assertInstanceOf(OcurrenceResource::class, $save['data']);   
+        $this->assertContains($violence_type, $save); # Seja especifico, utilize $this->assertEquals()
+        $this->assertContains($what_to_do, $save);    # Seja especifico, utilize $this->assertEquals()
+        $this->assertInstanceOf(OcurrenceResource::class, $save['data']);
     }
 
     /** @test */
@@ -61,7 +61,7 @@ class OcurrenceServiceTest extends TestCase
         #Creating a User to pass ID into save()
         $user = factory('App\Models\User')->create();
 
-        #Storing wrongful data (type_name doesnt exists) on method save() from service       
+        #Storing wrongful data (type_name doesnt exists) on method save() from service
         $data = [
             'violence_type' => $this->faker->name,
             'what_to_do' => $this->faker->paragraph,
@@ -71,7 +71,7 @@ class OcurrenceServiceTest extends TestCase
 
         #Calling method save() and storing response into a variable
         $save = $this->service->save($data);
-    
+
         #Creating Invalid Type message variable
         $message = "Type doesn't exist.";
 
@@ -82,7 +82,7 @@ class OcurrenceServiceTest extends TestCase
 
     /** @test */
     public function check_if_update_ocurrence_is_successful()
-    {       
+    {
         #Creating User and actingAs
         factory('App\Models\User')->create();
 
@@ -90,8 +90,8 @@ class OcurrenceServiceTest extends TestCase
         factory('App\Models\OcurrenceType')->create();
 
         #Creating an Ocurrence to pass ID into update()
-        $ocurrence = factory('App\Models\Ocurrence')->create();   
-        
+        $ocurrence = factory('App\Models\Ocurrence')->create();
+
         #Creating Variables
         $what_to_do = $this->faker->paragraph;
 
@@ -101,12 +101,12 @@ class OcurrenceServiceTest extends TestCase
         ];
 
         #Calling update() and storing response into variable
-        $update = $this->service->update($data, $ocurrence->id);
+        $update = $this->service->update($data, $ocurrence->id); #Por que ao inves de criar um array $data la em cima pra jogar aqui, vc n usa ['what_to_do' => $what_to_do]?
 
         #Assertion
         $this->assertEquals($update['response']['success'], true);
         $this->assertInstanceOf(OcurrenceResource::class, $update['response']['data']);
-        $this->assertContains($what_to_do, $update['response']);
+        $this->assertContains($what_to_do, $update['response']); # Seja especifico, utilize $this->assertEquals()
     }
 
     /** @test */
@@ -130,6 +130,8 @@ class OcurrenceServiceTest extends TestCase
         $this->assertInstanceOf(Ocurrence::class, $delete['response']['data']);
     }
 
+    # Rolava criar um test pra cobrir um cenário de erro do método delete()
+
     /** @test */
     public function check_if_list_ocurrences_is_successful()
     {
@@ -147,6 +149,8 @@ class OcurrenceServiceTest extends TestCase
 
         #Assertion
         $this->assertCount(5, $list);
+
+        #Rolava fazer um for() aqui e utilizar o $this->assertEquals
     }
 
     /** @test */
@@ -163,8 +167,11 @@ class OcurrenceServiceTest extends TestCase
 
         #Calling show() and storing response into a variable
         $show = $this->service->show($ocurrence->id);
-        
+
         #Assertion
         $this->assertInstanceOf(OcurrenceResource::class, $show['response']['data']);
+        # Usar $this->assertEquals()
     }
+
+    # Criar cenário de erro para o show (por exemplo se não vier um ID
 }
